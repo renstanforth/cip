@@ -3,7 +3,7 @@
    Plugin Name: Custom Invoice Plugin
    Plugin URI: https://www.renstanforth.com/
    description: This provides invoice features to the site.
-   Version: 0.11
+   Version: 0.12
    Author: Ren Stanforth
    Author URI: https://www.renstanforth.com/
    License: GNU GPL3
@@ -38,14 +38,21 @@
   /**
   * Activate the plugin
   */
-  function cip_activate() { 
+  function cip_activate() {
+    require_once( ABSPATH . 'wp-admin/includes/upgrade.php' );
+    global $wpdb;
+    $charset_collate = $wpdb->get_charset_collate();
+    $tables_path = plugin_dir_path( __FILE__ ) . '/includes/migration/tables.sql';
+    $tables_sql = file_get_contents($tables_path);
+    $sql = str_replace('__charset_collate__', $charset_collate, $tables_sql);
+    
+    // Create tables
+    dbDelta( $sql );
+
     // Trigger function to register custom post type
     cip_setup_post_type(); 
     // Clear the permalinks
     flush_rewrite_rules(); 
-
-    // ToDo:
-    // - Create DB: restaurants, orders
   }
   register_activation_hook( __FILE__, 'cip_activate' );
 
