@@ -1,0 +1,41 @@
+#post-body-content {
+  margin: 0;
+}
+
+.toplevel_page_restaurant-mngmt-page #wpbody-content{
+  margin-top: 20px;
+}
+
+.toplevel_page_restaurant-mngmt-page #wpbody-content img {
+  height: 25px;
+}
+
+.restaurants_page_cip-products-page #wpbody-content .content-header,
+.restaurants_page_cip-orders-page #wpbody-content .content-header {
+  width: 250px;
+  display: flex;
+  vertical-align: middle;
+  align-items: center;
+}
+
+.restaurants_page_cip-products-page #wpbody-content .content-header h1,
+.restaurants_page_cip-orders-page #wpbody-content .content-header h1 {
+  width: auto;
+  display: inline-block;
+}
+
+.restaurants_page_cip-products-page #wpbody-content .content-header button,
+.restaurants_page_cip-orders-page #wpbody-content .content-header button {
+  float: right;
+  height: 31px;
+  margin-left: 10px;
+}
+
+.restaurants_page_cip-products-page #wpbody-content select,
+.restaurants_page_cip-orders-page #wpbody-content select {
+  height: auto;
+}
+
+.restaurants_page_cip-orders-page .input-group-prepend label{
+  width: 115px;
+}

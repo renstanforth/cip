@@ -3,7 +3,7 @@
    Plugin Name: Custom Invoice Plugin
    Plugin URI: https://www.renstanforth.com/
    description: This provides invoice features to the site.
-   Version: 0.12
+   Version: 0.13
    Author: Ren Stanforth
    Author URI: https://www.renstanforth.com/
    License: GNU GPL3
@@ -107,7 +107,125 @@
     // - Show total orders
     ?>
     <h1>Invoice #<?= the_ID();?></h1>
-    <h2>Company: Restaurant 1</h2>
     <?php
+    include(plugin_dir_path( __FILE__ ) . '/includes/templates/invoice-form.php');
   }
-?>
+
+  function my_add_custom_fields($post_id)
+  {
+      if ( $_POST['post_type'] == 'invoices' ) {
+          add_post_meta($post_id, 'my_meta_key_name', 'my meta value', true);
+      }
+      return true;
+  }
+  add_action('wp_insert_post', 'my_add_custom_fields');
+
+  function cip_scripts_and_styles_admin(){
+    wp_enqueue_style('cip-styles',
+    plugins_url('admin/css/style.css', __FILE__)
+    );
+    wp_enqueue_style('bootstrap4',
+      'https://cdn.jsdelivr.net/npm/bootstrap@4.6.0/dist/css/bootstrap.min.css'
+    );
+    wp_enqueue_style('jquery-css',
+      '//code.jquery.com/ui/1.12.1/themes/base/jquery-ui.css'
+    );
+    wp_enqueue_script('bootstrap-script',
+      'https://cdn.jsdelivr.net/npm/bootstrap@4.6.0/dist/js/bootstrap.min.js'
+    );
+    wp_enqueue_script('jquery-script',
+      'https://code.jquery.com/jquery-1.12.4.js',
+      array('jquery','jquery-ui-droppable','jquery-ui-draggable', 'jquery-ui-sortable')
+    );
+    wp_enqueue_script('jquery-ui-script',
+      'https://code.jquery.com/ui/1.12.1/jquery-ui.js'
+    );
+    wp_enqueue_script('cip-script',
+    plugins_url('admin/js/script.js', __FILE__)
+    );
+  }
+  add_action('admin_enqueue_scripts','cip_scripts_and_styles_admin');
+
+  function cip_scripts_and_styles_public(){
+    global $post;
+    if ( is_a( $post, 'WP_Post' ) && has_shortcode( $post->post_content, 'cip_invoice_table') ) {
+      wp_enqueue_style('bootstrap4',
+        'https://cdn.jsdelivr.net/npm/bootstrap@4.6.0/dist/css/bootstrap.min.css'
+      );
+      wp_enqueue_style('datatables',
+        'https://cdn.datatables.net/1.10.25/css/jquery.dataTables.min.css'
+      );
+      wp_enqueue_script('jquery-script',
+        'https://code.jquery.com/jquery-3.5.1.js'
+      );
+      wp_enqueue_script('datatables-script',
+        'https://cdn.datatables.net/1.10.25/js/jquery.dataTables.min.js'
+      );
+      wp_enqueue_script('cip-script',
+      plugins_url('public/js/script.js', __FILE__)
+      );
+    }
+  }
+  add_action('wp_enqueue_scripts','cip_scripts_and_styles_public');
+
+  /**
+   * Restaurant Management
+   */
+  function cip_restaurant_menus() {
+    add_menu_page(
+        __( 'Restaurants', 'textdomain' ),
+        __( 'Restaurants','textdomain' ),
+        'manage_options',
+        'restaurant-mngmt-page',
+        'cip_restaurant_mngmt',
+        'dashicons-food',
+        59
+    );
+
+    add_submenu_page(
+      'restaurant-mngmt-page',
+      __( 'Products', 'textdomain' ),
+      __( 'Products','textdomain' ),
+      'manage_options',
+      'cip-products-page',
+      'cip_products_mngmt',
+      1
+    );
+
+    add_submenu_page(
+      'restaurant-mngmt-page',
+      __( 'Orders', 'textdomain' ),
+      __( 'Orders','textdomain' ),
+      'manage_options',
+      'cip-orders-page',
+      'cip_orders_mngmt',
+      2
+    );
+  }
+  add_action('admin_menu', 'cip_restaurant_menus');
+  
+  /**
+   * Display callback for pages
+   */
+  function cip_restaurant_mngmt() {
+      include(plugin_dir_path( __FILE__ ) . '/includes/templates/restaurant-page.php');
+  }
+
+  function cip_products_mngmt() {
+    include(plugin_dir_path( __FILE__ ) . '/includes/templates/products-page.php');
+  }
+
+  function cip_orders_mngmt() {
+    include(plugin_dir_path( __FILE__ ) . '/includes/templates/orders-page.php');
+  }
+
+  /**
+   * Shortcode for Invoice table
+   */
+  function cip_invoice_table_shortcode() {
+    ob_start();
+    include(plugin_dir_path( __FILE__ ) . '/includes/templates/invoice-dashboard.php');
+
+    return ob_get_clean();
+  }
+  add_shortcode('cip_invoice_table', 'cip_invoice_table_shortcode');
