@@ -1,5 +1,5 @@
 CREATE TABLE `cip_restaurants` (
-  `id` mediumint(9) NOT NULL,
+  `id` mediumint(9) NOT NULL AUTO_INCREMENT,
   `time` timestamp NULL DEFAULT current_timestamp(),
   `name` text COLLATE utf8mb4_unicode_ci NOT NULL,
   `image` varchar(255) COLLATE utf8mb4_unicode_ci NOT NULL DEFAULT '',
@@ -7,7 +7,7 @@ CREATE TABLE `cip_restaurants` (
 ) __charset_collate__;
 
 CREATE TABLE `cip_products` (
-  `id` mediumint(9) NOT NULL,
+  `id` mediumint(9) NOT NULL AUTO_INCREMENT,
   `date_created` timestamp NULL DEFAULT current_timestamp(),
   `name` varchar(50) COLLATE utf8mb4_unicode_ci NOT NULL,
   `price` float NOT NULL,
@@ -16,7 +16,7 @@ CREATE TABLE `cip_products` (
 ) __charset_collate__;
 
 CREATE TABLE `cip_orders` (
-  `id` mediumint(9) NOT NULL,
+  `id` mediumint(9) NOT NULL AUTO_INCREMENT,
   `date_created` timestamp NULL DEFAULT current_timestamp(),
   `prod_id` int(11) NOT NULL,
   `resto_id` int(11) NOT NULL,
