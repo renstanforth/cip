@@ -128,18 +128,18 @@ function cip_refresh_order_list() {
 
           var totalColumn = tD.cloneNode();
           totalColumn.innerText = element.total;
-          totalOrders = totalOrders + parseFloat(element.total).toFixed(2);
-          $(tRow).append(totalColumn);
+          totalOrders = totalOrders + parseFloat(element.total);
+          $(tRow).append(parseFloat(totalColumn).toFixed(2));
           
           var feesColumn = tD.cloneNode();
           feesColumn.innerText = element.fees;
-          totalFees = totalFees + parseFloat(element.fees).toFixed(2);
-          $(tRow).append(feesColumn);
+          totalFees = totalFees + parseFloat(element.fees);
+          $(tRow).append(parseFloat(feesColumn).toFixed(2));
 
           var transferColumn = tD.cloneNode();
           transferColumn.innerText = element.transfer;
-          totalTransfer = totalTransfer + parseFloat(element.transfer).toFixed(2);
-          $(tRow).append(transferColumn);
+          totalTransfer = totalTransfer + parseFloat(element.transfer);
+          $(tRow).append(parseFloat(transferColumn).toFixed(2));
 
           $('table.cip-order-list tbody').append(tRow);
         });
