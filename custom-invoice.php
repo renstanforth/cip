@@ -3,7 +3,7 @@
    Plugin Name: Custom Invoice Plugin
    Plugin URI: https://www.renstanforth.com/
    description: This provides invoice features to the site.
-   Version: 0.15
+   Version: 0.16
    Author: Ren Stanforth
    Author URI: https://www.renstanforth.com/
    License: GNU GPL3
