@@ -1,4 +1,7 @@
-<!-- Initial: Static Data -->
+<?php
+$restaurant = new Restaurant();
+$restaurants = $restaurant->getRestaurants();
+?>
 <div class="container">
   <div class="jumbotron">
     <h1 class="display-4">Restaurants</h1>
@@ -21,18 +24,18 @@
       </tr>
     </thead>
     <tbody>
-      <tr>
-        <th scope="row">1</th>
-        <td>Restaurant 1</td>
-        <td><img src="https://www.logodesign.net/images/tutorials/restaurent-logos/restaurant-logo-designer-needs.png"/></td>
-        <td><a href="#">Delete</a></td>
-      </tr>
-      <tr>
-        <th scope="row">2</th>
-        <td>Restaurant 1</td>
-        <td><img src="https://www.pngkit.com/png/full/291-2913293_big-image-restaurant-logo.png"/></td>
-        <td><a href="#">Delete</a></td>
-      </tr>
+        <?php
+          foreach ($restaurants as $key => $value) {
+            ?>
+            <tr>
+              <th scope="row"><?= $value->id?></th>
+              <td><?= $value->name?></td>
+              <td><img src="<?= $value->image?>"/></td>
+              <td><a href="#" onclick="cip_remove('restaurant', <?= $value->id?>)">Delete</a></td>
+            </tr>
+            <?php
+          }
+        ?>
     </tbody>
   </table>
 
@@ -58,7 +61,7 @@
         </div>
         <div class="modal-footer">
           <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
-          <button type="button" class="btn btn-primary">Add</button>
+          <button type="button" class="btn btn-primary" id="add-restaurant">Add</button>
         </div>
       </div>
     </div>

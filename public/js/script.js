@@ -1,7 +1,7 @@
 $(document).ready(function() {
   $.noConflict();
   $('#invoice-table').DataTable({
-    "ajax": "/wp-content/plugins/custom-invoice/public/temp-data.json",
+    "ajax": "/wp-json/cip/v1/invoices",
     "columns": [
         { "data": "id" },
         { "data": "restaurant" },

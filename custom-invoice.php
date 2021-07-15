@@ -3,11 +3,19 @@
    Plugin Name: Custom Invoice Plugin
    Plugin URI: https://www.renstanforth.com/
    description: This provides invoice features to the site.
-   Version: 0.13
+   Version: 0.14
    Author: Ren Stanforth
    Author URI: https://www.renstanforth.com/
    License: GNU GPL3
    */
+
+  /**
+   * Require Classes
+   */
+  require_once plugin_dir_path( __FILE__ ) . 'includes/classes/Restaurant.php';
+  require_once plugin_dir_path( __FILE__ ) . 'includes/classes/Product.php';
+  require_once plugin_dir_path( __FILE__ ) . 'includes/classes/Order.php';
+  require_once plugin_dir_path( __FILE__ ) . 'includes/classes/Invoice.php';
 
    /**
    * Register "invoices" custom post type
@@ -98,27 +106,29 @@
   add_action( 'add_meta_boxes', 'global_notice_meta_box' );
 
   function cip_invoice_details() {
-    // ToDo:
-    // - Add restaurant dropdown
-    // - Add status
-    // - Add start date and end date
-    // - Show total based from start date and end date
-    // - Add fees, transfer
-    // - Show total orders
     ?>
     <h1>Invoice #<?= the_ID();?></h1>
     <?php
     include(plugin_dir_path( __FILE__ ) . '/includes/templates/invoice-form.php');
   }
 
-  function my_add_custom_fields($post_id)
-  {
-      if ( $_POST['post_type'] == 'invoices' ) {
-          add_post_meta($post_id, 'my_meta_key_name', 'my meta value', true);
+  function cip_save_postmeta($post_id, $post, $update ) {
+    if ( $_POST['post_type'] == 'invoices' ) {
+      if (!$update) {
+        add_post_meta($post_id, 'cip_restaurant_id', $_POST['cip_restaurant_id'], true);
+        add_post_meta($post_id, 'cip_invoice_status', $_POST['cip_invoice_status'], true);
+        add_post_meta($post_id, 'cip_date_start', $_POST['cip_date_start'], true);
+        add_post_meta($post_id, 'cip_date_end', $_POST['cip_date_end'], true);
+      } else {
+        update_post_meta($post_id, 'cip_restaurant_id', $_POST['cip_restaurant_id']);
+        update_post_meta($post_id, 'cip_invoice_status', $_POST['cip_invoice_status']);
+        update_post_meta($post_id, 'cip_date_start', $_POST['cip_date_start']);
+        update_post_meta($post_id, 'cip_date_end', $_POST['cip_date_end']);
       }
-      return true;
+    }
+    return $update;
   }
-  add_action('wp_insert_post', 'my_add_custom_fields');
+  add_action('save_post', 'cip_save_postmeta', 10, 3);
 
   function cip_scripts_and_styles_admin(){
     wp_enqueue_style('cip-styles',
@@ -229,3 +239,174 @@
     return ob_get_clean();
   }
   add_shortcode('cip_invoice_table', 'cip_invoice_table_shortcode');
+
+  /**
+   * REST API: Restaurants
+   */
+  function cip_api_restaurant_get( $data ) {
+    $restaurant = new Restaurant();
+    if ( $data->get_param('id') ) {
+      return $restaurant->getRestaurant( $data->get_param('id') );
+    } else {
+      return $restaurant->getRestaurants();
+    }
+  }
+  add_action('rest_api_init', function () {
+    register_rest_route( 'cip/v1', 'restaurants', array(
+          'methods'  => 'GET',
+          'callback' => 'cip_api_restaurant_get'
+        ));
+  });
+
+  function cip_api_restaurant_insert( $data ) {
+    $restaurant = new Restaurant();
+    $name = $data->get_param('name');
+    $logo = $data->get_param('logo');
+    $restaurant->setRestaurant( $name, $logo );
+    if ( $restaurant->save() ) {
+      return true;
+    }
+  }
+  add_action('rest_api_init', function () {
+    register_rest_route( 'cip/v1', 'restaurants/insert', array(
+            'methods'  => 'POST',
+            'callback' => 'cip_api_restaurant_insert'
+        ));
+  });
+
+  function cip_api_restaurant_remove( $data ) {
+    $restaurant = new Restaurant();
+    $id = $data->get_param('id');
+    if ( $data->get_param('id') ) {
+      return $restaurant->delete( $data->get_param('id') );
+    }
+  }
+  add_action('rest_api_init', function () {
+    register_rest_route( 'cip/v1', 'restaurants/remove', array(
+                  'methods'  => 'DELETE',
+                  'callback' => 'cip_api_restaurant_remove'
+        ));
+  });
+
+  /**
+   * REST API: Products
+   */
+  function cip_api_product_get( $data ) {
+    $product = new Product();
+    if ( $data->get_param('id') ) {
+      return $product->getProduct( $data->get_param('id') );
+    } else if ( $data->get_param('resto_id') ) {
+      return $product->getProductsByResto($data->get_param('resto_id'));
+    } else {
+      return $product->getProducts();
+    }
+  }
+  add_action('rest_api_init', function () {
+    register_rest_route( 'cip/v1', 'products', array(
+                  'methods'  => 'GET',
+                  'callback' => 'cip_api_product_get'
+        ));
+  });
+
+  function cip_api_product_insert( $data ) {
+    $product = new Product();
+    $name = $data->get_param('name');
+    $price = $data->get_param('price');
+    $resto_id = $data->get_param('resto_id');
+    $product->setProduct( $name, $price, $resto_id );
+    if ( $product->save() ) {
+      return true;
+    }
+  }
+  add_action('rest_api_init', function () {
+    register_rest_route( 'cip/v1', 'products/insert', array(
+                  'methods'  => 'POST',
+                  'callback' => 'cip_api_product_insert'
+        ));
+  });
+
+  function cip_api_product_remove( $data ) {
+    $product = new Product();
+    $id = $data->get_param('id');
+    if ( $data->get_param('id') ) {
+      return $product->delete( $data->get_param('id') );
+    }
+  }
+  add_action('rest_api_init', function () {
+    register_rest_route( 'cip/v1', 'products/remove', array(
+                  'methods'  => 'DELETE',
+                  'callback' => 'cip_api_product_remove'
+        ));
+  });
+
+  /**
+   * REST API: Orders
+   */
+  function cip_api_order_get( $data ) {
+    $order = new Order();
+    if ( $data->get_param('id') ) {
+      return $order->getOrder( $data->get_param('id') );
+    } else if ($data->get_param('resto-id') &&
+      $data->get_param('start-date') &&
+      $data->get_param('end-date')) {
+      return $order->getOrdersByDateRange($data->get_param('resto-id'),
+        $data->get_param('start-date'),
+        $data->get_param('end-date')
+      );
+    } else {
+      return $order->getOrders();
+    }
+  }
+  add_action('rest_api_init', function () {
+    register_rest_route( 'cip/v1', 'orders', array(
+                  'methods'  => 'GET',
+                  'callback' => 'cip_api_order_get'
+        ));
+  });
+
+  function cip_api_order_insert( $data ) {
+    $order = new Order();
+    $customer_order = array(
+      'prod_id' => $data->get_param('prod_id'),
+      'quantity' => $data->get_param('quantity'),
+      'resto_id' => $data->get_param('resto_id'),
+      'fees' => $data->get_param('fees'),
+      'transfer' => $data->get_param('transfer'),
+      'client_name' => $data->get_param('client_name'),
+    );
+    $order->setOrder( $customer_order );
+    if ( $order->save() ) {
+      return true;
+    }
+  }
+  add_action('rest_api_init', function () {
+    register_rest_route( 'cip/v1', 'orders/insert', array(
+                  'methods'  => 'POST',
+                  'callback' => 'cip_api_order_insert'
+        ));
+  });
+
+  function cip_api_order_remove( $data ) {
+    $order = new Order();
+    $id = $data->get_param('id');
+    if ( $data->get_param('id') ) {
+      return $order->delete( $data->get_param('id') );
+    }
+  }
+  add_action('rest_api_init', function () {
+    register_rest_route( 'cip/v1', 'orders/remove', array(
+                  'methods'  => 'DELETE',
+                  'callback' => 'cip_api_order_remove'
+        ));
+  });
+
+  function cip_get_invoices() {
+    $invoice = new Invoice();
+    return $invoice->getInvoices();
+  }
+  add_action('rest_api_init', function () {
+    register_rest_route( 'cip/v1', 'invoices', array(
+                  'methods'  => 'GET',
+                  'callback' => 'cip_get_invoices'
+        ));
+  });

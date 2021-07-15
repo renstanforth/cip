@@ -39,3 +39,12 @@
 .restaurants_page_cip-orders-page .input-group-prepend label{
   width: 115px;
 }
+
+.post-type-invoices #invoice-details table {
+  table-layout: fixed ;
+  width: 100% ;
+}
+
+.post-type-invoices #invoice-details table td {
+  width: 20% ;
+}

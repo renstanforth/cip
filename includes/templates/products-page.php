@@ -1,4 +1,10 @@
-<!-- Initial: Static Data -->
+<?php
+$restaurant = new Restaurant();
+$restaurants = $restaurant->getRestaurants();
+
+$product = new Product();
+$products = $product->getProducts();
+?>
 <div class="container">
   <div class="content-header">
     <h1 class="display-4">Products</h1>
@@ -15,20 +21,19 @@
       </tr>
     </thead>
     <tbody>
-      <tr>
-        <th scope="row">1</th>
-        <td>Product 1</td>
-        <td>1.10</td>
-        <td>Restaurant 1</td>
-        <td><a href="#">Delete</a></td>
-      </tr>
-      <tr>
-        <th scope="row">2</th>
-        <td>Product 2</td>
-        <td>2.00</td>
-        <td>Restaurant 1</td>
-        <td><a href="#">Delete</a></td>
-      </tr>
+      <?php
+        foreach ($products as $key => $value) {
+          ?>
+          <tr>
+            <th scope="row"><?= $value->id?></th>
+            <td><?= $value->name?></td>
+            <td><?= $value->price?></td>
+            <td><?= $restaurant->getRestaurant($value->resto_id)->name?></td>
+            <td><a href="#" onclick="cip_remove('product', <?= $value->id?>)">Delete</a></td>
+          </tr>
+          <?php
+        }
+      ?>
     </tbody>
   </table>
 
@@ -56,18 +61,20 @@
               <label class="input-group-text" for="restaurantName">Restaurant</label>
             </div>
             <select class="custom-select" id="restaurantName">
-              <option selected>Choose...</option>
-              <option value="1">Resto 1</option>
-              <option value="2">Resto 2</option>
-              <option value="3">Resto 3</option>
-              <option value="4">Resto 4</option>
-              <option value="5">Resto 5</option>
+              <option value="" selected disabled hidden>Choose here</option>
+              <?php
+                foreach ($restaurants as $key => $value) {
+                  ?>
+                    <option value="<?= $value->id?>"><?= $value->name?></option>
+                  <?php
+                }
+              ?>
             </select>
           </div>
         </div>
         <div class="modal-footer">
           <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
-          <button type="button" class="btn btn-primary">Add</button>
+          <button type="button" class="btn btn-primary" id="add-product">Add</button>
         </div>
       </div>
     </div>

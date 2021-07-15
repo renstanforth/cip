@@ -1,4 +1,12 @@
-<!-- Initial: Static Data -->
+<?php
+$restaurant = new Restaurant();
+$restaurants = $restaurant->getRestaurants();
+
+$product = new Product();
+
+$order = new Order();
+$orders = $order->getOrders();
+?>
 <div class="container">
   <div class="content-header">
     <h1 class="display-4">Orders</h1>
@@ -19,28 +27,27 @@
       </tr>
     </thead>
     <tbody>
-      <tr>
-        <th scope="row">1</th>
-        <td>Ren Stanforth</td>
-        <td>Pizza</td>
-        <td>1</td>
-        <td>3.00</td>
-        <td>0.10</td>
-        <td>0.10</td>
-        <td>Restaurant 1</td>
-        <td><a href="#">Delete</a></td>
-      </tr>
-      <tr>
-        <th scope="row">2</th>
-        <td>Ren Stanforth</td>
-        <td>Milkshake</td>
-        <td>1</td>
-        <td>2.50</td>
-        <td>0.05</td>
-        <td>0.0</td>
-        <td>Restaurant 1</td>
-        <td><a href="#">Delete</a></td>
-      </tr>
+      <?php
+        foreach ($orders as $key => $value) {
+          ?>
+          <tr>
+            <th scope="row"><?= $value->id?></th>
+            <td><?= $value->client_name?></td>
+            <td><?= $product->getProduct($value->prod_id)->name?></td>
+            <td><?= $value->quantity?></td>
+            <?php
+              $prod_price = $product->getProduct($value->prod_id)->price;
+              $total = (float)$prod_price * (int)$value->quantity;
+            ?>
+            <td><?= $total?></td>
+            <td><?= $value->fees?></td>
+            <td><?= $value->transfer?></td>
+            <td><?= $restaurant->getRestaurant($value->resto_id)->name?></td>
+            <td><a href="#" onclick="cip_remove('order', <?= $value->id?>)">Delete</a></td>
+          </tr>
+          <?php
+        }
+      ?>
     </tbody>
   </table>
 
@@ -59,33 +66,28 @@
             <div class="input-group-prepend">
               <span class="input-group-text" id="client-name">Client Name</span>
             </div>
-            <input type="text" class="form-control" aria-label="Default" aria-describedby="client-name" name="clientName">
+            <input type="text" class="form-control" aria-label="Default" aria-describedby="client-name" id="clientName">
           </div>
           <div class="input-group mb-3 input-group-fix">
             <div class="input-group-prepend">
               <label class="input-group-text" for="restaurantName">Restaurant</label>
             </div>
             <select class="custom-select" id="restaurantName">
-              <option selected>Choose...</option>
-              <option value="1">Resto 1</option>
-              <option value="2">Resto 2</option>
-              <option value="3">Resto 3</option>
-              <option value="4">Resto 4</option>
-              <option value="5">Resto 5</option>
+              <option value="" selected disabled hidden>Choose here</option>
+              <?php
+                foreach ($restaurants as $key => $value) {
+                  ?>
+                    <option value="<?= $value->id?>"><?= $value->name?></option>
+                  <?php
+                }
+              ?>
             </select>
           </div>
           <div class="form-group row">
             <div class="col-sm-12">
               Food to order:
-            </div>
-            <div class="col-sm-4">
-              <input type="radio" aria-label="Radio button for following text input" name="selectedProduct"> Pizza
-            </div>
-            <div class="col-sm-4">
-              <input type="radio" aria-label="Radio button for following text input" name="selectedProduct"> Empanada
-            </div>
-            <div class="col-sm-4">
-              <input type="radio" aria-label="Radio button for following text input" name="selectedProduct"> Mac & Cheese
+              <div class="row food-list">
+              </div>
             </div>
           </div>
           <div class="form-group">
@@ -109,7 +111,7 @@
         </div>
         <div class="modal-footer">
           <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
-          <button type="button" class="btn btn-primary">Add</button>
+          <button type="button" class="btn btn-primary" id="add-order">Add</button>
         </div>
       </div>
     </div>
