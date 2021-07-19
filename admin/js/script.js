@@ -10,7 +10,7 @@ $(document).ready(function() {
     }
 
     $.ajax({
-      url: "../wp-json/cip/v1/restaurants/insert",
+      url: ajax_urls.api + "/restaurants/insert",
       method: "POST",
       data: data,
       dataType: "json"
@@ -27,7 +27,7 @@ $(document).ready(function() {
     }
 
     $.ajax({
-      url: "../wp-json/cip/v1/products/insert",
+      url: ajax_urls.api + "/products/insert",
       method: "POST",
       data: data,
       dataType: "json"
@@ -47,7 +47,7 @@ $(document).ready(function() {
     }
 
     $.ajax({
-      url: "../wp-json/cip/v1/orders/insert",
+      url: ajax_urls.api + "/orders/insert",
       method: "POST",
       data: data,
       dataType: "json"
@@ -60,7 +60,7 @@ $(document).ready(function() {
     var restoId = $(this).val();
 
     $.ajax({
-      url: "../wp-json/cip/v1/products?resto_id=" + restoId,
+      url: ajax_urls.api + "/products?resto_id=" + restoId,
       method: "GET",
       dataType: "json",
       success: function(response) {
@@ -93,7 +93,7 @@ $(document).ready(function() {
 
 function cip_remove( keyword, id ) {
   $.ajax({
-    url: "../wp-json/cip/v1/" + keyword + "s/remove?id=" + id,
+    url: ajax_urls.api + "/" + keyword + "s/remove?id=" + id,
     method: "DELETE"
   }).done(function() {
     location.reload();
@@ -107,7 +107,7 @@ function cip_refresh_order_list() {
   
   if (dateStart !== '' && dateEnd !== '') {
     $.ajax({
-      url: "../wp-json/cip/v1/orders?resto-id=" + restoID + "&start-date=" + dateStart + "&end-date=" + dateEnd,
+      url: ajax_urls.api + "/orders?resto-id=" + restoID + "&start-date=" + dateStart + "&end-date=" + dateEnd,
       method: "GET",
       dataType: "json",
       success: function(response) {

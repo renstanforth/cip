@@ -10,3 +10,7 @@
 .paginate_button {
   font-family: monospace;
 }
+
+.cip-download img {
+  height: 16px;
+}

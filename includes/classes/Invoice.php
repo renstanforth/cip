@@ -7,8 +7,8 @@ class Invoice {
     $this->wpdb = $wpdb;
   }
 
-  public function getInvoices() {
-    $invoice_post = $this->getInvoicePost();
+  public function getInvoices( $id = null ) {
+    $invoice_post = $this->getInvoicePost( $id );
     $data = array();
     foreach ($invoice_post as $key => $value) {
       $item = array(
@@ -21,6 +21,7 @@ class Invoice {
         'fees' => null,
         'transfer' => null,
         'orders' => null,
+        'order_list' => null,
       );
       $invoice_postmeta = $this->getPostMeta($value->ID);
       $resto_id = 0;
@@ -54,17 +55,24 @@ class Invoice {
       $item['fees'] = $order_total['fees'];
       $item['transfer'] = $order_total['transfer'];
       $item['orders'] = $order_total['orders'];
+      $item['order_list'] = $order_total['order_list'];
       $data[] = $item;
     }
     return array("data" => $data);
   }
 
-  public function getInvoicePost() {
+  public function getInvoicePost( $id = null ) {
     $wpdb_posts = $this->wpdb->posts;
     $query = "
       SELECT $wpdb_posts.ID,$wpdb_posts.post_title
       FROM $wpdb_posts
-      WHERE $wpdb_posts.post_type = 'invoices'
+      WHERE $wpdb_posts.post_type = 'invoices'";
+
+    if ($id) {
+      $query .= " AND $wpdb_posts.ID = $id";
+    }
+
+    $query .= "
       AND $wpdb_posts.post_status = 'publish'
       GROUP BY $wpdb_posts.ID
       ORDER BY $wpdb_posts.post_date DESC

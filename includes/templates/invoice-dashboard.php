@@ -16,6 +16,7 @@
       <th>Fees</th>
       <th>Transfer</th>
       <th>Orders</th>
+      <th></th>
     </tr>
   </thead>
 </table>

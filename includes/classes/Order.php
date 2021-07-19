@@ -30,7 +30,6 @@ class Order {
   }
 
   public function getOrdersByDateRange($resto_id, $date_start, $date_end, $format_date = true) {
-    // if ($format_date) {
       $min_date = DateTime::createFromFormat('m/d/Y', $date_start);
       $max_date = DateTime::createFromFormat('m/d/Y', $date_end);
       $min_date = $min_date->format('Y-m-d');
@@ -50,16 +49,32 @@ class Order {
       'total' => 0,
       'fees' => 0,
       'transfer' => 0,
-      'orders' => 0
+      'orders' => 0,
+      'order_list' => array()
     );
 
     $orders_date_range = $this->getOrdersByDateRange($resto_id, $date_start, $date_end, false);
 
     for ($i=0; $i < count($orders_date_range); $i++) {
+      $resto = new Restaurant();
+      $resto_info = $resto->getRestaurant($orders_date_range[$i]->resto_id);
+      $product = new Product();
+      $prod_info = $product->getProduct($orders_date_range[$i]->prod_id);
+      $order_info = array(
+        'resto_name' => $resto_info->name,
+        'product_name' => $prod_info->name,
+        'product_price' => $prod_info->price,
+        'product_quantity' => $orders_date_range[$i]->quantity,
+        'order_total' => $orders_date_range[$i]->total,
+        'order_fees' => $orders_date_range[$i]->fees,
+        'order_transfer' => $orders_date_range[$i]->transfer,
+        'client_name' => $orders_date_range[$i]->client_name,
+      );
       $total_sum['total'] = $total_sum['total'] + (float)$orders_date_range[$i]->total;
       $total_sum['fees'] = $total_sum['fees'] + (float)$orders_date_range[$i]->fees;
       $total_sum['transfer'] = $total_sum['transfer'] + (float)$orders_date_range[$i]->transfer;
       $total_sum['orders']++;
+      $total_sum['order_list'][] = $order_info;
     }
 
     return $total_sum;

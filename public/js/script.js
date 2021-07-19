@@ -3,7 +3,7 @@ var dataTable;
 $(document).ready(function() {
   $.noConflict();
   dataTable = $('#invoice-table').DataTable({
-    "ajax": "/wp-json/cip/v1/invoices",
+    "ajax": ajax_urls.api + "/invoices",
     "columns": [
         { "data": "id" },
         { "data": "restaurant" },
@@ -13,7 +13,13 @@ $(document).ready(function() {
         { "data": "total" },
         { "data": "fees" },
         { "data": "transfer" },
-        { "data": "orders" }
+        { "data": "orders" },
+        {
+            data: null,
+            className: "cip-download",
+            defaultContent: '<a href="#" onclick="cipDownload(this)"><img src="' + ajax_urls.plugin_public_images + '/download.png"/></a>',
+            orderable: false
+        }
     ],
     "lengthChange": false,
     "language": {
@@ -37,4 +43,9 @@ function cipFilter(key, element) {
   $('.filter-buttons .btn').removeClass('btn-secondary');
   
   $(element).addClass('btn-secondary');
+}
+
+function cipDownload(e) {
+  var rowId = $(e).parent().parent().children(':first-child').text();
+  window.location.href = ajax_urls.api + "/invoices/download?id=" + rowId;
 }

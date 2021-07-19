@@ -3,7 +3,7 @@
    Plugin Name: Custom Invoice Plugin
    Plugin URI: https://www.renstanforth.com/
    description: This provides invoice features to the site.
-   Version: 0.19
+   Version: 0.2
    Author: Ren Stanforth
    Author URI: https://www.renstanforth.com/
    License: GNU GPL3
@@ -153,6 +153,11 @@
     wp_enqueue_script('cip-script',
     plugins_url('admin/js/script.js', __FILE__)
     );
+    wp_localize_script( 'cip-script', 'ajax_urls',
+      array( 
+          'api' => home_url() . '/wp-json/cip/v1',
+      )
+    );
   }
   add_action('admin_enqueue_scripts','cip_scripts_and_styles_admin');
 
@@ -176,6 +181,13 @@
       );
       wp_enqueue_script('cip-script',
       plugins_url('public/js/script.js', __FILE__)
+      );
+
+      wp_localize_script( 'cip-script', 'ajax_urls',
+        array( 
+            'api' => home_url() . '/wp-json/cip/v1',
+            'plugin_public_images' => plugin_dir_url( __FILE__ ) . "public/images",
+        )
       );
     }
   }
@@ -392,8 +404,8 @@
   function cip_api_order_remove( $data ) {
     $order = new Order();
     $id = $data->get_param('id');
-    if ( $data->get_param('id') ) {
-      return $order->delete( $data->get_param('id') );
+    if ( $id ) {
+      return $order->delete( $id );
     }
   }
   add_action('rest_api_init', function () {
@@ -411,5 +423,81 @@
     register_rest_route( 'cip/v1', 'invoices', array(
                   'methods'  => 'GET',
                   'callback' => 'cip_get_invoices'
+        ));
+  });
+
+  function cip_download_invoice( $data ) {
+    $id = $data->get_param('id');
+    $invoice = new Invoice();
+    if ( $id ) {
+      $result = $invoice->getInvoices($id);
+    } else {
+      $result = $invoice->getInvoices();
+    }
+
+    $filename = 'All Invoice';
+    $date = date("Y-m-d H:i:s");
+    $output = fopen('php://output', 'w');
+    foreach ( $result as $key => $value ) {
+      foreach ($value as $key2 => $value2) {
+        $filename = $value2['restaurant'] . "_Invoice_" . $value2['start_date'] . "-" . $value2['end_date'];
+        fputcsv( $output, array('Invoice ID',
+          'Restaurant',
+          'Start Date',
+          'End Date',
+          'Total',
+          'Fees',
+          'Transfer',
+          'Orders',
+          'Status')
+        );
+        fputcsv( $output, array($value2['id'],
+          $value2['restaurant'],
+          $value2['start_date'],
+          $value2['end_date'],
+          $value2['total'],
+          $value2['fees'],
+          $value2['transfer'],
+          $value2['orders'],
+          $value2['status'])
+        );
+        fputcsv( $output, array(''));
+        fputcsv( $output, array('LIST OF ORDERS'));
+        fputcsv( $output, array('Restaurant',
+          'Client Name', 
+          'Product',
+          'Price',
+          'Quantity',
+          'Total',
+          'Fees',
+          'Transfer')
+        );
+        foreach ($value2['order_list'] as $key3 => $value3) {
+          fputcsv( $output, array($value3['resto_name'],
+            $value3['client_name'],
+            $value3['product_name'],
+            $value3['product_price'],
+            $value3['product_quantity'],
+            $value3['order_total'],
+            $value3['order_fees'],
+            $value3['order_transfer'])
+          );
+        }
+        fputcsv( $output, array(''));
+        fputcsv( $output, array(''));
+      }
+    }
+    header("Pragma: public");
+    header("Expires: 0");
+    header("Cache-Control: must-revalidate, post-check=0, pre-check=0");
+    header("Cache-Control: private", false);
+    header('Content-Type: text/csv; charset=utf-8');
+    header("Content-Disposition: attachment; filename=\"" . $filename . ".csv\";" );
+    header("Content-Transfer-Encoding: binary");exit;
+  }
+  add_action('rest_api_init', function () {
+    register_rest_route( 'cip/v1', 'invoices/download', array(
+                  'methods'  => 'GET',
+                  'callback' => 'cip_download_invoice'
         ));
   });
