@@ -1,0 +1,12 @@
+.filter-buttons {
+  position: absolute;
+  z-index: 1;
+}
+
+.filter-buttons button.btn {
+  font-family: 'Roboto', sans-serif;
+}
+
+.paginate_button {
+  font-family: monospace;
+}
