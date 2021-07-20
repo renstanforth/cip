@@ -125,6 +125,7 @@ function cipFilter(key, element) {
 
 function cipDownload(e) {
   var rowId = $(e).parent().parent().children(':nth-child(2)').text();
+  rowId = rowId.substring(1);
   window.location.href = ajax_urls.api + "/invoices/download?id=" + rowId;
 }
 
