@@ -131,7 +131,9 @@ function cipDownload(e) {
 function cipMarkPaid(e) {
   let a = [];
   $('.cip-checkbox input[type="checkbox"]:checked').each(function() {
-      a.push($(this).parent().next().text());
+    var idVal = $(this).parent().next().text();
+    idVal = idVal.substring(1);
+    a.push(idVal);
   });
   
   $.ajax({
