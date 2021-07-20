@@ -3,7 +3,7 @@
    Plugin Name: Custom Invoice Plugin
    Plugin URI: https://www.renstanforth.com/
    description: This provides invoice features to the site.
-   Version: 0.2
+   Version: 0.21
    Author: Ren Stanforth
    Author URI: https://www.renstanforth.com/
    License: GNU GPL3
@@ -170,6 +170,9 @@
       wp_enqueue_style('datatables',
         'https://cdn.datatables.net/1.10.25/css/jquery.dataTables.min.css'
       );
+      wp_enqueue_style('datatables-datetime',
+        'https://cdn.datatables.net/datetime/1.1.0/css/dataTables.dateTime.min.css'
+      );
       wp_enqueue_style('cip-styles',
         plugins_url('public/css/style.css', __FILE__)
       );
@@ -178,6 +181,12 @@
       );
       wp_enqueue_script('datatables-script',
         'https://cdn.datatables.net/1.10.25/js/jquery.dataTables.min.js'
+      );
+      wp_enqueue_script('moment-script',
+        'https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.18.1/moment.min.js'
+      );
+      wp_enqueue_script('datetime-script',
+        'https://cdn.datatables.net/datetime/1.1.0/js/dataTables.dateTime.min.js'
       );
       wp_enqueue_script('cip-script',
       plugins_url('public/js/script.js', __FILE__)
@@ -499,5 +508,17 @@
     register_rest_route( 'cip/v1', 'invoices/download', array(
                   'methods'  => 'GET',
                   'callback' => 'cip_download_invoice'
+        ));
+  });
+
+  function cip_invoice_paid( $data ) {
+    $invoice = new Invoice();
+    $invoice->setPaid($data->get_param('data'));
+    return true;
+  }
+  add_action('rest_api_init', function () {
+    register_rest_route( 'cip/v1', 'invoices/paid', array(
+                  'methods'  => 'POST',
+                  'callback' => 'cip_invoice_paid'
         ));
   });

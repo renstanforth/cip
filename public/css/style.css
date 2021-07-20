@@ -1,10 +1,100 @@
+.page-invoices #content {
+  width: 100%;
+}
+
+.filter-options {
+  display: inline-flex;
+  vertical-align: middle;
+  align-items: center;
+  margin-bottom: 25px;
+}
+
 .filter-buttons {
-  position: absolute;
-  z-index: 1;
+  display: inline-flex;
 }
 
 .filter-buttons button.btn {
   font-family: 'Roboto', sans-serif;
+  font-size: 13px;
+  color: #777b84;
+  max-height: 40px;
+}
+
+.filter-buttons button.btn-secondary {
+  color: #fff;
+}
+
+.filter-dates {
+  display: inline-flex;
+  vertical-align: middle;
+  align-items: center;
+  border: 1px solid lightgrey;
+  border-radius: 5px;
+  padding: 0 0 0 25px;
+  background-color: #f2f3f7;
+}
+
+.filter-dates img {
+  height: 25px;
+}
+
+.filter-dates-label {
+  display: inline-flex;
+  vertical-align: middle;
+  align-items: center;
+  justify-content: center;
+  line-height: 25px;
+}
+
+.filter-dates-label span {
+  margin: 0 20px;
+}
+
+.filter-dates-inputs,
+.filter-dates-inputs input {
+  background-color: #fff;
+  border-radius: 5px;
+}
+
+.filter-dates-inputs input[type="text"] {
+  margin: 0;
+  width: 163px;
+}
+
+.filter-dates-inputs input[type="text"]:last-child {
+  border-top-right-radius: 5px;
+  border-bottom-right-radius: 5px;
+}
+
+#invoice-table_filter {
+  display: none;
+}
+
+.filter-search {
+  position: relative;
+  display: inline-flex;
+  margin-left: 25px;
+}
+
+.filter-search img {
+  position: absolute;
+  z-index: 2;
+  display: block;
+  height: 25px;
+  text-align: center;
+  pointer-events: none;
+  top: 15px;
+  left: 10px;
+}
+
+.filter-search input[type="text"] {
+  border-radius: 5px;
+  border: 1px solid lightgrey;
+  padding-left: 60px;
+  background-color: #fff;
+  color: #38393d;
+  margin: 0;
+  width: 310px;
 }
 
 .paginate_button {
@@ -13,4 +103,15 @@
 
 .cip-download img {
   height: 16px;
+}
+
+.mark-paid {
+  margin-left: 25px;
+}
+
+.mark-paid .btn {
+  font-family: 'Roboto', sans-serif;
+  height: 52px;
+  background-color: #fe9603;
+  border: none;
 }

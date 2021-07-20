@@ -1,10 +1,17 @@
 var dataTable;
+var minDate, maxDate;
 
 $(document).ready(function() {
   $.noConflict();
   dataTable = $('#invoice-table').DataTable({
     "ajax": ajax_urls.api + "/invoices",
     "columns": [
+        {
+          data: null,
+          className: "cip-checkbox",
+          defaultContent: '<input type="checkbox">',
+          orderable: false
+        },
         { "data": "id" },
         { "data": "restaurant" },
         { "data": "status" },
@@ -30,15 +37,55 @@ $(document).ready(function() {
       }
     }
   });
+
+  // Date Filtering Function(start date and end date)
+  $.fn.dataTable.ext.search.push(
+    function( settings, data, dataIndex ) {
+      var min = minDate.val();
+      var max = maxDate.val();
+
+      if (min != '' && max != '') {
+        var startDate = new Date( data[4] );
+        var endDate = new Date( data[5] );
+
+        if (
+            ( min === null && max === null ) ||
+            ( startDate >= min && startDate <= max && endDate >= min && endDate <= max )
+        ) {
+            return true;
+        }
+        
+        return false;
+      }
+    }
+  );
+
+  // Custom search
+  $('#custom-search').keyup(function(){
+    dataTable.search( $(this).val() ).draw();
+ })
+
+  // Create date inputs
+  minDate = new DateTime($('#min'), {
+      format: 'MM/DD/YYYY'
+  });
+  maxDate = new DateTime($('#max'), {
+      format: 'MM/DD/YYYY'
+  });
+
+  // Refresh table
+  $('#min, #max').on('change', function () {
+    dataTable.draw();
+  });
 } );
 
 function cipFilter(key, element) {
-  dataTable.column(2).search(key).draw();
+  dataTable.column(3).search(key).draw();
 
   if (key === 'all') {
     key = '';
   }
-  dataTable.column(2).search(key).draw();
+  dataTable.column(3).search(key).draw();
 
   $('.filter-buttons .btn').removeClass('btn-secondary');
   
@@ -46,6 +93,23 @@ function cipFilter(key, element) {
 }
 
 function cipDownload(e) {
-  var rowId = $(e).parent().parent().children(':first-child').text();
+  var rowId = $(e).parent().parent().children(':nth-child(2)').text();
   window.location.href = ajax_urls.api + "/invoices/download?id=" + rowId;
+}
+
+function cipMarkPaid(e) {
+  let a = [];
+  $('.cip-checkbox input[type="checkbox"]:checked').each(function() {
+      a.push($(this).parent().next().text());
+  });
+  
+  $.ajax({
+    url: ajax_urls.api + "/invoices/paid",
+    method: "POST",
+    data: { 'data' : a},
+    dataType: "json",
+    success: function() {
+      location.reload();
+    }
+  });
 }

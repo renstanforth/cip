@@ -94,4 +94,11 @@ class Invoice {
     $invoices = $this->wpdb->get_results($query);
     return $invoices;
   }
+
+  public function setPaid( $ids ) {
+    for ($i=0; $i < count($ids); $i++) {
+      update_post_meta($ids[$i], 'cip_invoice_status', 'paid');
+    }
+    return true;
+  }
 }
