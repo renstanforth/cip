@@ -24,9 +24,10 @@
     <button type="button" class="btn btn-primary btn-lg" onclick="cipMarkPaid(this)">Mark as paid</button>
   </div>
 </div>
-<table id="invoice-table" class="display" style="width:100%">
+<table id="invoice-table" class="hover" style="width:100%">
   <thead>
     <tr>
+      <!-- <th><input class="cip-checkbox" type="checkbox" value="all"></th> -->
       <th></th>
       <th>ID</th>
       <th>Restaurant</th>

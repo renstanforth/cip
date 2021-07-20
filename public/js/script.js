@@ -12,14 +12,39 @@ $(document).ready(function() {
           defaultContent: '<input type="checkbox">',
           orderable: false
         },
-        { "data": "id" },
+        {
+          data: "id",
+          render: function(data, type) {
+            return "#" + data;
+          }
+        },
         { "data": "restaurant" },
-        { "data": "status" },
+        {
+          data: "status",
+          render: function(data, type) {
+            return '<span class="badge badge-pill badge-primary badge-' + data + '">' + data + '</span>';
+          }
+        },
         { "data": "start_date" },
         { "data": "end_date" },
-        { "data": "total" },
-        { "data": "fees" },
-        { "data": "transfer" },
+        {
+          data: "total",
+          render: function(data, type) {
+            return "HK$" + data.toFixed(2);
+          }
+        },
+        {
+          data: "fees",
+          render: function(data, type) {
+            return "HK$" + data.toFixed(2);
+          }
+        },
+        {
+          data: "transfer",
+          render: function(data, type) {
+            return "HK$" + data.toFixed(2);
+          }
+        },
         { "data": "orders" },
         {
             data: null,
