@@ -110,6 +110,11 @@
   height: 16px;
 }
 
+.cip-restaurant img {
+  height: 15px;
+  margin-right: 5px;
+}
+
 .mark-paid {
   display: inline-flex;
   margin-left: 25px;

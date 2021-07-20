@@ -14,6 +14,7 @@ class Invoice {
       $item = array(
         'id' => $value->ID,
         'restaurant' => null,
+        'restaurant_logo' => null,
         'status' => null,
         'start_date' => null,
         'end_date' => null,
@@ -33,6 +34,7 @@ class Invoice {
             $restaurant = new Restaurant();
             $restaurant_info = $restaurant->getRestaurant($resto_id);
             $item['restaurant'] = $restaurant_info->name;
+            $item['restaurant_logo'] = $restaurant_info->image;
             break;
           case 'cip_invoice_status':
             $item['status'] = strtoupper($value_postmeta->meta_value);

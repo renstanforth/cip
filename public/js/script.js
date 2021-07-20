@@ -18,7 +18,13 @@ $(document).ready(function() {
             return "#" + data;
           }
         },
-        { "data": "restaurant" },
+        {
+          data: "restaurant",
+          className: "cip-restaurant",
+          render: function(data, type, row) {
+            return '<div><img src="' + row.restaurant_logo + '" />' + row.restaurant + '</div>';
+          }
+        },
         {
           data: "status",
           render: function(data, type) {

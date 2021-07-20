@@ -1,0 +1,13 @@
+@media only screen and (max-width: 1431px) {
+  .filter-options {
+    display: block;
+  }
+
+  .filter-buttons,
+  .filter-search,
+  .mark-paid {
+    position: relative;
+    display: block;
+    margin: 10px 0;
+  }
+}
