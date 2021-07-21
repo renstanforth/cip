@@ -4,10 +4,129 @@
   }
 
   .filter-buttons,
-  .filter-search,
-  .mark-paid {
+  .filter-search {
     position: relative;
     display: block;
     margin: 10px 0;
+  }
+}
+
+@media only screen and (max-width: 1024px) {
+  #invoice-table tr td {
+    min-width: 16px;
+  }
+
+  .cip-checkbox input {
+    margin: 0;
+    width: 25px;
+    height: 25px;
+  }
+
+  table.dataTable.dtr-inline.collapsed>tbody>tr>td.dtr-control:before,
+  table.dataTable.dtr-inline.collapsed>tbody>tr>th.dtr-control:before {
+    left: 20px;
+  }
+
+  .entry-content ul li:before,
+  .widget-container ul li:before,
+  .comment-body ul li:before {
+    content: '';
+    color: #fff;
+  }
+
+  .cip-download {
+    display: flex;
+    vertical-align: middle;
+    align-items: center;
+  }
+
+  .cip-download img {
+    margin-left: 10px;
+    height: 25px;
+    width: 25px;
+  }
+
+  .tick-mark,
+  .download-csv {
+    display: inline-block;
+  }
+
+  .mark-paid {
+    display: none;
+  }
+
+  .mark-paid-mobile {
+    display: block;
+    margin: 10px 0;
+  }
+
+  .filter-search input[type="text"] {
+    width: 100%;
+    max-width: 480px;
+  }
+}
+
+@media only screen and (max-width: 533px) {
+  .filter-dates {
+    padding-left: 10px;
+  }
+}
+
+@media only screen and (max-width: 425px) {
+  .filter-dates {
+    padding: 0;
+    border: none;
+  }
+
+  .filter-dates-label {
+    display: none;
+  }
+
+  .filter-dates-inputs {
+    background-color: #f7f8fa;
+  }
+
+  .filter-dates-inputs input {
+    border: 1px solid lightgrey;
+    border-radius: 5px;
+  }
+
+  .filter-dates-inputs input {
+    padding-left: 60px;
+  }
+
+  .filter-dates-inputs input[type="text"]:nth-child(2) {
+    border: 1px solid lightgrey;
+    border-radius: 5px;
+    margin-bottom: 10px;
+  }
+
+  .filter-dates-inputs input[type="text"]:last-child {
+    border-top-left-radius: 5px;
+    border-bottom-left-radius: 5px;
+  }
+
+  .filter-dates-inputs span {
+    display: none;
+  }
+
+  .filter-dates-inputs .calendar {
+    display: unset;
+    position: absolute;
+    margin-top: 17px;
+    margin-left: 10px;
+  }
+
+  .dataTables_paginate.paging_simple_numbers {
+    float: right;
+  }
+
+  .filter-buttons {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+  }
+
+  .filter-buttons button {
+    margin: 10px;
   }
 }

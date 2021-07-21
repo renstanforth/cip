@@ -11,9 +11,11 @@
       <span>From</span>
     </div>
     <div class="filter-dates-inputs">
-      <input type="text" id="min" name="min">
-      &#8594;
-      <input type="text" id="max" name="max">
+      <span class="calendar">&#128197;</span>
+      <input type="text" id="min" name="min" placeholder="Min Date">
+      <span>&#8594;</span>
+      <span class="calendar">&#128197;</span>
+      <input type="text" id="max" name="max" placeholder="Max Date">
     </div>
   </div>
   <div class="filter-search">
@@ -28,7 +30,9 @@
   <thead>
     <tr>
       <!-- <th><input class="cip-checkbox" type="checkbox" value="all"></th> -->
+      <th>More Info</th>
       <th></th>
+      <th><span class="tick-mark">Tick to Mark</span></th>
       <th>ID</th>
       <th>Restaurant</th>
       <th>Status</th>
@@ -38,7 +42,10 @@
       <th>Fees</th>
       <th>Transfer</th>
       <th>Orders</th>
-      <th></th>
+      <th><span class="download-csv">Download to CSV</span></th>
     </tr>
   </thead>
 </table>
+<div class="mark-paid-mobile">
+    <button type="button" class="btn form-control btn-primary btn-lg" onclick="cipMarkPaid(this)">Mark as paid</button>
+</div>

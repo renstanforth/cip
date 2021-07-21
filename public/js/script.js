@@ -1,11 +1,25 @@
 var dataTable;
 var minDate, maxDate;
+var navMenu = 0;
 
 $(document).ready(function() {
   $.noConflict();
   dataTable = $('#invoice-table').DataTable({
     "ajax": ajax_urls.api + "/invoices",
+    "responsive": true,
     "columns": [
+        {
+          data: null,
+          defaultContent: '',
+          className: 'control',
+          orderable: false
+        },
+        {   // Checkbox select column
+          data: null,
+          defaultContent: '',
+          className: 'select-checkbox',
+          orderable: false
+        },
         {
           data: null,
           className: "cip-checkbox",
@@ -53,11 +67,16 @@ $(document).ready(function() {
         },
         { "data": "orders" },
         {
-            data: null,
-            className: "cip-download",
-            defaultContent: '<a href="#" onclick="cipDownload(this)"><img src="' + ajax_urls.plugin_public_images + '/download.png"/></a>',
-            orderable: false
-        }
+          data: null,
+          orderable: false,
+          className: "cip-download",
+          render: function(data, type, row) {
+            let cipDownloadElement = '<a href="#" onclick="cipDownload(' + row.id;
+            cipDownloadElement += ')"><img src="' + ajax_urls.plugin_public_images;
+            cipDownloadElement += '/download.png"/></a>';
+            return cipDownloadElement;
+          }
+        },
     ],
     "lengthChange": false,
     "language": {
@@ -108,6 +127,16 @@ $(document).ready(function() {
   $('#min, #max').on('change', function () {
     dataTable.draw();
   });
+
+  $('.menu-toggle .menu-icon').on('click', function () {
+    if (navMenu == 0) {
+      $('.nav.mobile-menu' ).show();
+      navMenu = 1;
+    } else {
+      $('.nav.mobile-menu' ).hide();
+      navMenu = 0;
+    }
+  });
 } );
 
 function cipFilter(key, element) {
@@ -123,10 +152,8 @@ function cipFilter(key, element) {
   $(element).addClass('btn-secondary');
 }
 
-function cipDownload(e) {
-  var rowId = $(e).parent().parent().children(':nth-child(2)').text();
-  rowId = rowId.substring(1);
-  window.location.href = ajax_urls.api + "/invoices/download?id=" + rowId;
+function cipDownload(id) {
+  window.location.href = ajax_urls.api + "/invoices/download?id=" + id;
 }
 
 function cipMarkPaid(e) {

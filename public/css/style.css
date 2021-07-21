@@ -71,6 +71,10 @@
   border-bottom-right-radius: 5px;
 }
 
+.filter-dates-inputs .calendar {
+  display: none;
+}
+
 #invoice-table_filter {
   display: none;
 }
@@ -106,8 +110,17 @@
   font-family: monospace;
 }
 
+.cip-download {
+  padding: 0;;
+}
+
 .cip-download img {
   height: 16px;
+}
+
+.tick-mark,
+.download-csv {
+  display: none;
 }
 
 .cip-restaurant img {
@@ -120,7 +133,12 @@
   margin-left: 25px;
 }
 
-.mark-paid .btn {
+.mark-paid-mobile {
+  display: none;
+}
+
+.mark-paid .btn,
+.mark-paid-mobile .btn {
   font-family: 'Roboto', sans-serif;
   height: 52px;
   background-color: #fe9603;

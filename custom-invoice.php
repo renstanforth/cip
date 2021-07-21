@@ -3,7 +3,7 @@
    Plugin Name: Custom Invoice Plugin
    Plugin URI: https://www.renstanforth.com/
    description: This provides invoice features to the site.
-   Version: 0.27
+   Version: 0.28
    Author: Ren Stanforth
    Author URI: https://www.renstanforth.com/
    License: GNU GPL3
@@ -170,6 +170,9 @@
       wp_enqueue_style('datatables',
         'https://cdn.datatables.net/1.10.25/css/jquery.dataTables.min.css'
       );
+      wp_enqueue_style('datatables-responsive',
+        'https://cdn.datatables.net/responsive/2.2.9/css/responsive.dataTables.min.css'
+      );
       wp_enqueue_style('datatables-datetime',
         'https://cdn.datatables.net/datetime/1.1.0/css/dataTables.dateTime.min.css'
       );
@@ -184,6 +187,9 @@
       );
       wp_enqueue_script('datatables-script',
         'https://cdn.datatables.net/1.10.25/js/jquery.dataTables.min.js'
+      );
+      wp_enqueue_script('datatables-responsive',
+        'https://cdn.datatables.net/responsive/2.2.9/js/dataTables.responsive.min.js'
       );
       wp_enqueue_script('moment-script',
         'https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.18.1/moment.min.js'
